@@ -1,0 +1,14 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Регистрация</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Получить код</button>
+    </form>
+</section>
+{% endblock %}

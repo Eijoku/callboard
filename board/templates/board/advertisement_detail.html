@@ -1,0 +1,27 @@
+{% extends 'board/base.html' %}
+
+{% block title %}{{ advertisement.title }}{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h1>{{ advertisement.title }}</h1>
+    <p class="meta">{{ advertisement.get_category_display }} · {{ advertisement.author.email }} · {{ advertisement.created_at }}</p>
+    <div class="content">{{ advertisement.content|safe }}</div>
+    {% if user == advertisement.author %}
+        <div class="actions">
+            <a href="{% url 'board:advertisement_edit' advertisement.pk %}">Редактировать</a>
+        </div>
+    {% endif %}
+</article>
+
+{% if response_form %}
+    <section class="card">
+        <h2>Откликнуться</h2>
+        <form method="post" action="{% url 'board:create_response' advertisement.pk %}">
+            {% csrf_token %}
+            {{ response_form.as_p }}
+            <button type="submit">Отправить отклик</button>
+        </form>
+    </section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Отклики{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Отклики на мои объявления</h1>
+    <form method="get">
+        <label for="advertisement">Фильтр по объявлению</label>
+        <select name="advertisement" id="advertisement">
+            <option value="">Все объявления</option>
+            {% for advertisement in advertisements %}
+                <option value="{{ advertisement.pk }}" {% if selected_advertisement == advertisement.pk|stringformat:'s' %}selected{% endif %}>{{ advertisement.title }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Применить</button>
+    </form>
+</section>
+
+{% for response in responses %}
+    <article class="card">
+        <h2>{{ response.advertisement.title }}</h2>
+        <p class="meta">{{ response.author.email }} · {{ response.get_status_display }} · {{ response.created_at }}</p>
+        <p>{{ response.text }}</p>
+        <div class="actions">
+            {% if response.status != 'accepted' %}
+                <form method="post" action="{% url 'board:accept_response' response.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Принять</button>
+                </form>
+            {% endif %}
+            <form method="post" action="{% url 'board:delete_response' response.pk %}">
+                {% csrf_token %}
+                <button type="submit">Удалить</button>
+            </form>
+        </div>
+    </article>
+{% empty %}
+    <div class="card">Откликов пока нет.</div>
+{% endfor %}
+{% endblock %}

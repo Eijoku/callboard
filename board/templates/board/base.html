@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Callboard{% endblock %}</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0b1020;
+            --bg-accent: radial-gradient(circle at top, rgba(61, 98, 177, 0.28), transparent 34%), #0b1020;
+            --panel: rgba(12, 18, 35, 0.92);
+            --panel-border: rgba(125, 154, 216, 0.18);
+            --text: #edf2ff;
+            --muted: #9ba9c6;
+            --link: #7cc7ff;
+            --link-hover: #b0e3ff;
+            --button: linear-gradient(135deg, #2854c5, #14307f);
+            --button-hover: linear-gradient(135deg, #3565df, #1d42a6);
+            --field: rgba(17, 26, 49, 0.95);
+            --field-border: rgba(122, 155, 223, 0.22);
+            --message: rgba(39, 74, 151, 0.38);
+            --shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg-accent);
+            color: var(--text);
+        }
+        header, main { max-width: 960px; margin: 0 auto; padding: 20px; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding-top: 28px;
+        }
+        nav { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { color: var(--link-hover); }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+        .messages { list-style: none; padding: 0; }
+        .messages li {
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: var(--message);
+            border: 1px solid rgba(116, 150, 223, 0.24);
+        }
+        form { display: grid; gap: 12px; }
+        input, textarea, select, button {
+            font: inherit;
+            padding: 11px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--field-border);
+        }
+        input, textarea, select {
+            background: var(--field);
+            color: var(--text);
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: 2px solid rgba(124, 199, 255, 0.24);
+            outline-offset: 1px;
+            border-color: rgba(124, 199, 255, 0.44);
+        }
+        button {
+            cursor: pointer;
+            color: #f7fbff;
+            border: none;
+            background: var(--button);
+            transition: transform .16s ease, opacity .16s ease, background .16s ease;
+        }
+        button:hover {
+            background: var(--button-hover);
+            transform: translateY(-1px);
+        }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .meta { color: var(--muted); font-size: 14px; }
+        .content { line-height: 1.7; }
+        .content iframe, .content video, .content img {
+            max-width: 100%;
+            border-radius: 14px;
+        }
+        .inline-form { display: inline; }
+        .inline-form button { padding: 10px 14px; }
+        h1, h2, h3 { margin-top: 0; }
+        option { background: #10182f; color: var(--text); }
+        .ck-editor__editable {
+            min-height: 280px;
+            color: #111827;
+        }
+        @media (max-width: 720px) {
+            header { align-items: flex-start; flex-direction: column; }
+            nav { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <a href="{% url 'board:advertisement_list' %}"><strong>Callboard</strong></a>
+    </div>
+    <nav>
+        {% if user.is_authenticated %}
+            <a href="{% url 'board:advertisement_create' %}">Новое объявление</a>
+            <a href="{% url 'board:response_list' %}">Отклики</a>
+            <span>{{ user.email }}</span>
+            <form method="post" action="{% url 'board:logout' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'board:signup' %}">Регистрация</a>
+            <a href="{% url 'board:login' %}">Вход</a>
+        {% endif %}
+    </nav>
+</header>
+<main>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

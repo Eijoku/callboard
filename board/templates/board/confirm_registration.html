@@ -1,0 +1,15 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Подтверждение регистрации{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Подтверждение регистрации</h1>
+    <p>Введите e-mail и шестизначный код из письма.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Подтвердить</button>
+    </form>
+</section>
+{% endblock %}

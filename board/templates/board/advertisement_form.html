@@ -1,0 +1,15 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Редактирование объявления{% endblock %}
+
+{% block content %}
+{{ form.media }}
+<section class="card">
+    <h1>{% if form.instance.pk %}Редактировать объявление{% else %}Новое объявление{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+</section>
+{% endblock %}

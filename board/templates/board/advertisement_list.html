@@ -1,0 +1,29 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Объявления{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Объявления</h1>
+    <form method="get">
+        <label for="category">Категория</label>
+        <select name="category" id="category">
+            <option value="">Все категории</option>
+            {% for value, label in categories %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Фильтровать</button>
+    </form>
+</div>
+
+{% for advertisement in advertisements %}
+    <article class="card">
+        <h2><a href="{{ advertisement.get_absolute_url }}">{{ advertisement.title }}</a></h2>
+        <p class="meta">{{ advertisement.get_category_display }} · {{ advertisement.author.email }} · откликов: {{ advertisement.response_count }}</p>
+        <p>{{ advertisement.content|striptags|truncatechars:220 }}</p>
+    </article>
+{% empty %}
+    <div class="card">Объявлений пока нет.</div>
+{% endfor %}
+{% endblock %}
